@@ -22,5 +22,5 @@ runs:
     - run: dotnet restore ${{ inputs.project-path }}
       shell: bash
 
-    - run: dotnet build ${{ inputs.project-path }} 
+    - run: dotnet build --configuration Release --no-restore ${{ inputs.project-path }} 
       shell: bash
