@@ -1,0 +1,26 @@
+ ## Because it’s a composite action we don’t specify a runner so we need to add the shell parameter to each run action. 
+ ## If you don’t do it you will have this kind of error message: Required property is missing: shell.
+name: "Build dotnet"
+description: "Build dotnet..."
+inputs:
+  dotnet-version:
+    description: 'The dotnet version to use'
+    default: '8.x.x'
+    required: true
+  project-path:
+    description: 'The path to the project'
+    required: true
+
+runs:
+  using: "composite" 
+  steps: 
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+
+    - run: dotnet restore ${{ inputs.project-path }}
+      shell: bash
+
+    - run: dotnet build ${{ inputs.project-path }} 
+      shell: bash
