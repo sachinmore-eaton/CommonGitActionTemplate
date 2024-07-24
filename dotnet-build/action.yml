@@ -44,7 +44,7 @@ runs:
         find . -type d -not -path './.git*' -not -path './node_modules*'
         echo "List of files:"
         find . -type f -not -path './.git*' -not -path './node_modules*'
-        
+      shell: bash 
     - name: Code Coverage Summary Report
       uses: irongut/CodeCoverageSummary@v1.3.0
       with:
