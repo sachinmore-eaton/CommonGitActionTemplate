@@ -40,19 +40,14 @@ runs:
         dotnet test ${{ inputs.unittest-project-path }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory coverage
       shell: bash
 
-
-    - name: List directory contents
-      run: ls -la
-      shell: bash
-
-      
-#    - name: List directories and files
-#     run: |
-#        echo "List of directories:"
-#        find . -type d -not -path './.git*' -not -path './node_modules*'
-#        echo "List of files:"
-#       find . -type f -not -path './.git*' -not -path './node_modules*'
-#     shell: bash 
+     
+    - name: List directories and files
+      run: |
+        echo "List of directories:"
+        find . -type d -not -path './.git*' -not -path './node_modules*'
+        echo "List of files:"
+        find . -type f -not -path './.git*' -not -path './node_modules*'
+      shell: bash 
 
     - name: Code Coverage Summary Report
       uses: irongut/CodeCoverageSummary@v1.3.0
