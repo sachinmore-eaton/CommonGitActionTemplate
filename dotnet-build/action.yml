@@ -8,9 +8,11 @@ inputs:
     default: '8.x.x'
     required: true
   project-path:
-    description: 'The path to the project'
+    description: 'The path to the project/solution'
     required: true
-
+  unittest-project-path:  
+    description: 'The ptah to the unit test project' 
+    required: false
 runs:
   using: "composite" 
   steps: 
@@ -32,7 +34,7 @@ runs:
 
     # Add coverlet.collector nuget package to test project - 'dotnet add <TestProject.cspoj> package coverlet
     - name: Test
-      run: dotnet test ${{ inputs.project-path }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
+      run: dotnet test ${{ inputs.unittest-project-path }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
 
     - name: Code Coverage Summary Report
       uses: irongut/CodeCoverageSummary@v1.3.0
