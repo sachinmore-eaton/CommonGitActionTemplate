@@ -37,14 +37,14 @@ runs:
     - name: Test
       run: |
         dotnet tool install --global coverlet.console
-        dotnet test ${{ inputs.unittest-project-path }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+        dotnet test ${{ inputs.unittest-project-path }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory coverage
       shell: bash
-      working-directory: ./src
+
 
     - name: List directory contents
       run: ls -la
       shell: bash
-      working-directory: ./src
+
       
 #    - name: List directories and files
 #     run: |
