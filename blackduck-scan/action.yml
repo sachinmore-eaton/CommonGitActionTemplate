@@ -1,1 +1,55 @@
+ ## Because it’s a composite action we don’t specify a runner so we need to add the shell parameter to each run action. 
+ ## If you don’t do it you will have this kind of error message: Required property is missing: shell.
+name: "DevOpsSec Blackduck Scan"
+description: "DevOpsSec Blackduck Scan""
+inputs:
+  project-name:
+    description: 'The project name to be scan'
+    default: ''
+    required: true
+  project.version.name:
+    description: 'The project version name to be scan'
+    required: true
+  blackduck-url: 
+    description: 'The black duck url name to be scan'
+    default: 'https://blackduck.eaton.com'
+    required: true
+  blackduck-api-token:
+    description: 'The black duck API token'
+    default: ''
+    required: true
+  detect-version:  
+    description: 'Detect version of blackduck synopsis'
+    default: '6.4.0'
+    required: true    
+  github-token:  
+    description: 'The Github  API token'
+    default: ''
+    required: true
+runs:
+  using: "composite" 
+  steps: 
+    steps:
+      - name: Checkout git repo
+        uses: actions/checkout@v3
 
+      - name: Install Node and NPM
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install packages
+        run: |
+          npm install
+          npm run postinstall
+      
+      - name: Run Synopsys Detect
+        uses: synopsys-sig/detect-action@v0.3.4
+        env:
+          SPRING_APPLICATION_JSON: '{"detect.project.name":"${{ inputs.project-name }}" ,"detect.project.version.name":"${{ project.version.name }}}"'
+        with:
+            scan-mode: INTELLIGENT
+            github-token: ${{ inputs.github-token }}
+            detect-version:  ${{ inputs.github-token }} 
+            blackduck-url: ${{ inputs.blackduck-url }}
+            blackduck-api-token: ${{ inputs.blackduck-api-token }}
