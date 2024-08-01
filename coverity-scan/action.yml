@@ -1,1 +1,55 @@
 
+ ## Because it’s a composite action we don’t specify a runner so we need to add the shell parameter to each run action. 
+ ## If you don’t do it you will have this kind of error message: Required property is missing: shell.
+name: "DevOpsSec Blackduck Scan"
+description: "DevOpsSec Blackduck Scan""
+inputs:
+  stream:
+    description: 'The coverity project stream name'
+    default: ''
+    required: true
+  coverity-url: 
+    description: 'The coverity url to be scan'
+    default: 'https://coverity.eaton.com'
+    required: true
+  coverity-user: 
+    description: 'The coverity user name'
+    default: 'sachinvmore@eaton.com'
+    required: true  
+  coverity-password:
+    description: 'The coverity pwd / token'
+    default: ''
+    required: true
+  github-token:  
+    description: 'The Github  API token'
+    default: ''
+    required: true
+runs:
+  using: "composite" 
+  steps: 
+name: Coverity Scan
+
+on:
+  push:
+     branches:
+       - main
+       - CoverityFixes
+
+jobs:      
+  coverity_scan:
+    runs-on: ubuntu-latest
+    container:
+      image: 'ghcr.io/etn-electrical/blim-coverity:20230206'
+      credentials:
+        username: ${{github.actor}}
+        password: ${{secrets.GITHUB_TOKEN}}
+    environment: Dev
+    steps:     
+      - uses: actions/checkout@v2
+      - name: Run Coverity Scan
+        run: |      
+            rm -rf idir
+            cov-capture --dir idir --project-dir ./ --language typescript
+            cov-import-scm --dir idir --scm git
+            cov-analyze --dir idir --all --webapp-security
+            cov-commit-defects --verbose 5 --dir idir --url ${{ inputs.coverity-url }} --user {{ inputs.coverity-user }} --password ${{ inputs.overity-password }}  --stream ${{ inputs.stream}}  
